@@ -1,12 +1,21 @@
 buildscript {
+    ext {
+        // Android Gradle Plugin
+        gradleVersion = "4.0.1"
+    }
+
     repositories {
+        // Android Gradle Plugin
+        google()
+
         mavenLocal()
         mavenCentral()
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.3.1'
+        // Android Gradle Plugin
+        classpath "com.android.tools.build:gradle:${gradleVersion}"
     }
 }
 
@@ -25,6 +34,9 @@ allprojects {
     }
 
     repositories {
+        // AAPT2
+        google()
+
         mavenLocal()
         mavenCentral()
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
