@@ -4,31 +4,25 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.tankzor.game.common_value.Dimension;
 import com.tankzor.game.common_value.GameImages;
 import com.tankzor.game.common_value.GameSounds;
 import com.tankzor.game.common_value.PlayerProfile;
-import com.tankzor.game.common_value.WeaponModel;
 import com.tankzor.game.common_value.research_model.ResearchModel;
 import com.tankzor.game.game_object.manager.WarMachineManager;
 import com.tankzor.game.game_object.movable_item.war_machine.WarMachine;
-import com.tankzor.game.game_object.movable_item.war_machine.movable_machine.MovableWarMachine;
 import com.tankzor.game.game_object.movable_item.war_machine.movable_machine.PlayerWarMachine;
 import com.tankzor.game.game_object.movable_item.weapon.AreaWeapon.AreaWeapon;
 import com.tankzor.game.game_object.movable_item.weapon.Bullet;
@@ -36,8 +30,6 @@ import com.tankzor.game.game_object.movable_item.weapon.WeaponManager;
 import com.tankzor.game.game_object.support_item.SupportItem;
 import com.tankzor.game.main.Tankzor;
 import com.tankzor.game.ui.BaseScreen;
-import com.tankzor.game.ui.DocumentScreen;
-import com.tankzor.game.ui.WeaponDetailScreen;
 
 /**
  * Created by Admin on 1/21/2017.
@@ -70,8 +62,6 @@ public class WorkshopScreen extends BaseScreen {
     private Integer buttonWidth;
     private Integer buttonHeight;
     private TextButton.TextButtonStyle buttonStyle;
-
-
 
     public WorkshopScreen(Tankzor parent, Viewport viewport, SpriteBatch batch, InputMultiplexer gameInputMultiplexer) {
         super(parent, viewport, batch, gameInputMultiplexer);
@@ -134,7 +124,9 @@ public class WorkshopScreen extends BaseScreen {
         background = new Image(skin.getDrawable(GameImages.KEY_BACKGROUND));
         background.setBounds(0, 0, widthScreen, heightScreen);
 
-        screenTitle = new ScreenTitle(0, heightScreen - Dimension.screenTitleHeight * 1.5f, widthScreen, Dimension.screenTitleHeight * 1.5f);
+        screenTitle = new ScreenTitle(this, previousScreen, 0,
+                heightScreen - Dimension.screenTitleHeight * 1.5f, widthScreen,
+                Dimension.screenTitleHeight * 1.5f);
 
         // Initialize ItemButton parameters
         initializeButtonWidth();
@@ -192,7 +184,7 @@ public class WorkshopScreen extends BaseScreen {
         mainContainer.addActor(weaponMenu);
 
         weaponMenu = new WorkshopMenu(20, "Defence");
-        weaponMenu.addItemButton(new UpgradeButton(SupportItem.TEMPORARY_ARMOR, buttonWidth,
+        weaponMenu.addItemButton(new UpgradeButton(this, SupportItem.TEMPORARY_ARMOR, buttonWidth,
                 buttonHeight, buttonStyle) {
             @Override
             void onAddButtonPress() {
@@ -203,7 +195,7 @@ public class WorkshopScreen extends BaseScreen {
                 }
             }
         });
-        weaponMenu.addItemButton(new UpgradeButton(SupportItem.PERMANENT_ARMOR, buttonWidth,
+        weaponMenu.addItemButton(new UpgradeButton(this, SupportItem.PERMANENT_ARMOR, buttonWidth,
                 buttonHeight, buttonStyle) {
             @Override
             void onAddButtonPress() {
@@ -220,15 +212,17 @@ public class WorkshopScreen extends BaseScreen {
 
         weaponMenu = new WorkshopMenu(22, "Repair");
         weaponMenu.addItemButton(formItemButton(ITEM_BUTTON_BUTTON_WEAPON_ITEM, SupportItem.REPAIR_KIT));
-        TankRepairButton tankRepairButton = new TankRepairButton(buttonWidth, buttonHeight, buttonStyle);
+        TankRepairButton tankRepairButton = new TankRepairButton(this, warMachineManager,
+                buttonWidth, buttonHeight, buttonStyle);
         weaponMenu.addItemButton(tankRepairButton);
-        allyTankRepairButton = new AllyTankRepairButton(buttonWidth, buttonHeight, buttonStyle);
+        allyTankRepairButton = new AllyTankRepairButton(this,
+                buttonWidth, buttonHeight, buttonStyle);
         weaponMenu.addItemButton(allyTankRepairButton);
         listWorkshopMenu.add(weaponMenu);
         mainContainer.addActor(weaponMenu);
 
         weaponMenu = new WorkshopMenu(25, "Other");
-        weaponMenu.addItemButton(new UpgradeButton(SupportItem.RADAR, buttonWidth,
+        weaponMenu.addItemButton(new UpgradeButton(this, SupportItem.RADAR, buttonWidth,
                 buttonHeight, buttonStyle) {
             @Override
             void onAddButtonPress() {
@@ -239,7 +233,7 @@ public class WorkshopScreen extends BaseScreen {
                 super.onAddButtonPress();
             }
         });
-        weaponMenu.addItemButton(new UpgradeButton(SupportItem.THERMOVISION, buttonWidth,
+        weaponMenu.addItemButton(new UpgradeButton(this, SupportItem.THERMOVISION, buttonWidth,
                 buttonHeight, buttonStyle) {
             @Override
             void onAddButtonPress() {
@@ -249,7 +243,7 @@ public class WorkshopScreen extends BaseScreen {
                 }
             }
         });
-        weaponMenu.addItemButton(new UpgradeButton(SupportItem.UPGRADE_TANK, buttonWidth,
+        weaponMenu.addItemButton(new UpgradeButton(this, SupportItem.UPGRADE_TANK, buttonWidth,
                 buttonHeight, buttonStyle) {
             @Override
             void onAddButtonPress() {
@@ -269,7 +263,7 @@ public class WorkshopScreen extends BaseScreen {
         });
         weaponMenu.addItemButton(formItemButton(ITEM_BUTTON_BUTTON_WEAPON_ITEM, SupportItem.BOOST_SPEED));
         weaponMenu.addItemButton(formItemButton(ITEM_BUTTON_BUTTON_WEAPON_ITEM, SupportItem.TIME_FREEZE));
-        weaponMenu.addItemButton(new UpgradeButton(SupportItem.LIFE_ITEM,
+        weaponMenu.addItemButton(new UpgradeButton(this, SupportItem.LIFE_ITEM,
                 buttonWidth, buttonHeight, buttonStyle) {
             @Override
             void onAddButtonPress() {
@@ -297,7 +291,7 @@ public class WorkshopScreen extends BaseScreen {
                 ResearchModel.DYNAMITE_RESEARCH_ID));
         researchMenu.addItemButton(formItemButton(ITEM_BUTTON_BUTTON_RESEARCH,
                 ResearchModel.ARMOR_RESEARCH_ID));
-        researchMenu.addItemButton(new ResearchButton(ResearchModel.FORCE_FIELD_RESEARCH_ID,
+        researchMenu.addItemButton(new ResearchButton(this, ResearchModel.FORCE_FIELD_RESEARCH_ID,
                 buttonWidth, buttonHeight, buttonStyle) {
             @Override
             void onAddButtonPress() {
@@ -321,15 +315,17 @@ public class WorkshopScreen extends BaseScreen {
 
         switch (itemButtonId) {
             case ITEM_BUTTON_BUTTON_UPGRADE: {
-                button = new UpgradeButton(additionalButtonId, buttonWidth, buttonHeight, buttonStyle);
+                button = new UpgradeButton(this, additionalButtonId,
+                        buttonWidth, buttonHeight, buttonStyle);
                 break;
             }
             case ITEM_BUTTON_BUTTON_WEAPON_ITEM: {
-                button = new WeaponItemButton(additionalButtonId, buttonWidth, buttonHeight, buttonStyle);
+                button = new WeaponItemButton(this, weaponManager, additionalButtonId,
+                        buttonWidth, buttonHeight, buttonStyle);
                 break;
             }
             case ITEM_BUTTON_BUTTON_RESEARCH: {
-                button = new ResearchButton(additionalButtonId, buttonWidth, buttonHeight, buttonStyle);
+                button = new ResearchButton(this, additionalButtonId, buttonWidth, buttonHeight, buttonStyle);
                 break;
             }
         }
@@ -381,446 +377,5 @@ public class WorkshopScreen extends BaseScreen {
     @Override
     public void dispose() {
         screenStage.dispose();
-    }
-
-    public class WorkshopMenu extends VerticalGroup {
-        Array<ItemButton> listItemButtons;
-
-        public WorkshopMenu(int iconId, String title) {
-            fill();
-
-            space(Dimension.buttonSpace / 2);
-
-            MenuTitle menuTitle = new MenuTitle(iconId, title, Gdx.graphics.getWidth(), Dimension.screenTitleHeight);
-            addActor(menuTitle);
-
-            listItemButtons = new Array<ItemButton>();
-        }
-
-        public void addItemButton(ItemButton itemButton) {
-            listItemButtons.add(itemButton);
-            addActor(itemButton);
-        }
-
-        public void updateAllButton(int value) {
-            for (int i = 0; i < listItemButtons.size; i++) {
-                listItemButtons.get(i).update(value);
-            }
-        }
-
-        public int size() {
-            return listItemButtons.size;
-        }
-    }
-
-    private class ScreenTitle extends Group {
-        Label moneyLabel, starLabel, lifeLabel;
-        Image background;
-        PlayerProfile playerProfile = PlayerProfile.getInstance();
-
-        ScreenTitle(float x, float y, float width, float height) {
-            setBounds(x, y, width, height);
-            Skin skin = GameImages.getInstance().getUiSkin();
-            background = new Image(skin.getDrawable(GameImages.KEY_LABEL_BACKGROUND));
-            background.setBounds(0, 0, width, height);
-            addActor(background);
-
-            Table iconGroup = new Table();
-            iconGroup.padLeft(Dimension.buttonSpace * 2);
-            iconGroup.setBounds(0, 0, width, height);
-
-            TextButton.TextButtonStyle buttonStyle = new TextButton.TextButtonStyle();
-            buttonStyle.font = GameImages.getInstance().getGameFont();
-            buttonStyle.fontColor = Color.WHITE;
-            buttonStyle.overFontColor = Color.LIGHT_GRAY;
-            TextButton backButton = new TextButton("<< BACK", buttonStyle);
-            backButton.getLabel().setFontScale(Dimension.normalFontScale);
-            backButton.setBounds(10, 0, Dimension.buttonWidth / 3, height);
-            backButton.addListener(new InputListener(){
-                @Override
-                public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                    return true;
-                }
-
-                @Override
-                public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                    PlayerProfile.getInstance().savePlayerData();
-                    WorkshopScreen.this.getParent().setScreen(previousScreen);
-                }
-            });
-
-            Label.LabelStyle labelStyle = GameImages.getInstance().getLabelStyle();
-            Label money = new Label("Coins: ", labelStyle);
-            money.setFontScale(Dimension.normalFontScale);
-            moneyLabel = new Label(playerProfile.getMoney() + "", labelStyle);
-            moneyLabel.setAlignment(Align.center);
-            moneyLabel.setFontScale(Dimension.normalFontScale);
-
-
-            Label star = new Label("Stars: ", labelStyle);
-            star.setFontScale(Dimension.normalFontScale);
-            starLabel = new Label(playerProfile.getStar() + "", labelStyle);
-            starLabel.setAlignment(Align.center);
-            starLabel.setFontScale(Dimension.normalFontScale);
-
-            Label life = new Label("Lives: ", labelStyle);
-            life.setFontScale(Dimension.normalFontScale);
-            lifeLabel = new Label(playerProfile.getLife() + "", labelStyle);
-            lifeLabel.setAlignment(Align.center);
-            lifeLabel.setFontScale(Dimension.normalFontScale);
-
-            iconGroup.add(money);
-            iconGroup.add(moneyLabel).padRight(Dimension.screenTitleHeight);
-            iconGroup.add(star);
-            iconGroup.add(starLabel).padRight(Dimension.screenTitleHeight);
-            iconGroup.add(life);
-            iconGroup.add(lifeLabel);
-            iconGroup.align(Align.center);
-
-            addActor(iconGroup);
-            addActor(backButton);
-        }
-
-        public void update() {
-            moneyLabel.setText(playerProfile.getMoney() + "");
-            starLabel.setText(playerProfile.getStar() + "");
-            lifeLabel.setText(playerProfile.getLife() + "");
-        }
-    }
-
-    private class UpgradeButton extends ItemButton {
-        Label valueLabel, capacityLabel;
-
-        UpgradeButton(int id, float width, float height, TextButtonStyle style) {
-            super(id, width, height, style);
-
-            Label.LabelStyle labelStyle = GameImages.getInstance().getLabelStyle();
-
-            capacityLabel = new Label("", labelStyle);
-            capacityLabel.setAlignment(Align.center);
-            capacityLabel.setFontScale(Dimension.normalFontScale);
-            add(capacityLabel).align(Align.right).fillY().width(100);
-
-            valueLabel = new Label("", labelStyle);
-            valueLabel.setAlignment(Align.center);
-            valueLabel.setFontScale(Dimension.normalFontScale);
-            add(valueLabel).align(Align.right).width(120);
-
-            add(addButton).padRight(Dimension.buttonSpace / 2);
-
-            setText(PlayerProfile.getInstance().getWeaponModel(id).name);
-        }
-
-        @Override
-        void update(int value) {
-            WeaponModel weaponModel = PlayerProfile.getInstance().getWeaponModel(id);
-            if (!weaponModel.unlocked || weaponModel.capacity == weaponModel.maxCapacity) {
-                setDisabled(true);
-                if (weaponModel.capacity != 0) {
-                    capacityLabel.setText(weaponModel.capacity + "");
-                } else {
-                    capacityLabel.setText("");
-                }
-                valueLabel.setText("");
-                addButton.setVisible(false);
-                return;
-            }
-            setDisabled(false);
-            valueLabel.setText(weaponModel.value + "");
-            if (weaponModel.capacity != 0) {
-                capacityLabel.setText(weaponModel.capacity + "");
-            } else {
-                capacityLabel.setText("");
-            }
-            addButton.setVisible(value > weaponModel.value);
-        }
-
-        @Override
-        void onPress() {
-            Tankzor parent = WorkshopScreen.this.getParent();
-            WeaponDetailScreen weaponDetailScreen = parent.getWeaponDetailScreen();
-            weaponDetailScreen.setWeaponModel(PlayerProfile.getInstance().getWeaponModel(id));
-            parent.setScreen(weaponDetailScreen);
-        }
-
-        @Override
-        void onAddButtonPress() {
-            GameSounds.getInstance().playSFX(GameSounds.PURCHASE_SFX_ID);
-            PlayerProfile playerProfile = PlayerProfile.getInstance();
-            WeaponModel weaponModel = playerProfile.getWeaponModel(id);
-            playerProfile.updateWeapon(id, 1);
-            playerProfile.addMoney(-weaponModel.value);
-
-            updateAllWeaponItem();
-        }
-    }
-
-    private class TankRepairButton extends UpgradeButton {
-        int currentPrice = -1;
-
-        TankRepairButton(float width, float height, TextButtonStyle style) {
-            super(SupportItem.REPAIR_TANK, width, height, style);
-        }
-
-        void calculateRepairCost() {
-            if (warMachineManager == null) {
-                currentPrice = 0;
-                return;
-            }
-            PlayerWarMachine playerWarMachine = warMachineManager.getPlayerWarMachine();
-            int hitPoint = playerWarMachine.getHitPoint();
-            int maxHitPoint = playerWarMachine.getMaxHitPoint();
-            if (hitPoint == maxHitPoint) {
-                currentPrice = 0;
-                return;
-            }
-            currentPrice = (maxHitPoint - hitPoint) * PlayerProfile.getInstance().getWeaponModel(id).value;
-        }
-
-        @Override
-        void update(int value) {
-            if (currentPrice == -1) {
-                calculateRepairCost();
-            }
-            if (currentPrice > 0) {
-                setDisabled(false);
-                valueLabel.setText(currentPrice + "");
-                if (currentPrice <= value) {
-                    addButton.setVisible(true);
-                } else {
-                    addButton.setVisible(false);
-                }
-            } else {
-                setDisabled(true);
-                valueLabel.setText("");
-                addButton.setVisible(false);
-            }
-        }
-
-        @Override
-        void onAddButtonPress() {
-            GameSounds.getInstance().playSFX(GameSounds.PURCHASE_SFX_ID);
-            PlayerWarMachine playerWarMachine = warMachineManager.getPlayerWarMachine();
-            playerWarMachine.setHitPoint(playerWarMachine.getMaxHitPoint());
-            PlayerProfile.getInstance().addMoney(-currentPrice);
-
-            updateAllWeaponItem();
-        }
-    }
-
-    private class AllyTankRepairButton extends UpgradeButton {
-        int currentPrice = -1;
-        Array<MovableWarMachine> alliesWarMachines;
-
-        AllyTankRepairButton(float width, float height, TextButtonStyle style) {
-            super(SupportItem.REPAIR_ALLY_TANK, width, height, style);
-        }
-
-        void setAlliesWarMachines(Array<MovableWarMachine> alliesWarMachines) {
-            this.alliesWarMachines = alliesWarMachines;
-        }
-
-        void calculateRepairCost() {
-            if (alliesWarMachines == null) {
-                currentPrice = 0;
-                return;
-            }
-            int totalHitPointLost = 0;
-            for (int i = 0; i < alliesWarMachines.size; i++) {
-                WarMachine warMachine = alliesWarMachines.get(i);
-                totalHitPointLost += warMachine.getMaxHitPoint() - warMachine.getHitPoint();
-            }
-            if (totalHitPointLost == 0) {
-                currentPrice = 0;
-                return;
-            }
-            currentPrice = totalHitPointLost * PlayerProfile.getInstance().getWeaponModel(id).value;
-        }
-
-        @Override
-        void update(int value) {
-            if (currentPrice == -1) {
-                calculateRepairCost();
-            }
-            if (currentPrice > 0) {
-                setDisabled(false);
-                valueLabel.setText(currentPrice + "");
-                if (currentPrice <= value) {
-                    addButton.setVisible(true);
-                } else {
-                    addButton.setVisible(false);
-                }
-            } else {
-                setDisabled(true);
-                valueLabel.setText("");
-                addButton.setVisible(false);
-            }
-        }
-
-        @Override
-        void onAddButtonPress() {
-            GameSounds.getInstance().playSFX(GameSounds.PURCHASE_SFX_ID);
-            for (int i = 0; i < alliesWarMachines.size; i++) {
-                WarMachine warMachine = alliesWarMachines.get(i);
-                warMachine.setHitPoint(warMachine.getMaxHitPoint());
-            }
-            PlayerProfile.getInstance().addMoney(-currentPrice);
-
-            updateAllWeaponItem();
-        }
-    }
-
-    private class WeaponItemButton extends ItemButton {
-        Label valueLabel;
-        Label capacityLabel;
-
-        WeaponItemButton(int id, float width, float height, TextButtonStyle textButtonStyle) {
-            super(id, width, height, textButtonStyle);
-
-            Label.LabelStyle labelStyle = GameImages.getInstance().getLabelStyle();
-
-            capacityLabel = new Label("", labelStyle);
-            capacityLabel.setAlignment(Align.center);
-            capacityLabel.setFontScale(Dimension.normalFontScale);
-            add(capacityLabel).align(Align.right).fillY().width(100);
-
-            valueLabel = new Label("", labelStyle);
-            valueLabel.setAlignment(Align.center);
-            valueLabel.setFontScale(Dimension.normalFontScale);
-            add(valueLabel).align(Align.right).width(120);
-
-            add(addButton).padRight(Dimension.buttonSpace / 2);
-
-            setText(PlayerProfile.getInstance().getWeaponModel(id).name);
-        }
-
-        @Override
-        public void update(int value) {
-            WeaponModel weaponModel = PlayerProfile.getInstance().getWeaponModel(id);
-            if (!weaponModel.unlocked || weaponModel.capacity == weaponModel.maxCapacity) {
-                setDisabled(true);
-                if (weaponModel.capacity != 0) {
-                    capacityLabel.setText(weaponModel.capacity + "");
-                } else {
-                    capacityLabel.setText("");
-                }
-                valueLabel.setText("");
-                addButton.setVisible(false);
-                return;
-            }
-            setDisabled(false);
-            valueLabel.setText(weaponModel.value + "");
-            if (weaponModel.capacity != 0) {
-                capacityLabel.setText(weaponModel.capacity + "");
-            } else {
-                capacityLabel.setText("");
-            }
-            addButton.setVisible(value > weaponModel.value);
-        }
-
-        @Override
-        void onPress() {
-            Tankzor parent = WorkshopScreen.this.getParent();
-            WeaponDetailScreen weaponDetailScreen = parent.getWeaponDetailScreen();
-            weaponDetailScreen.setWeaponModel(PlayerProfile.getInstance().getWeaponModel(id));
-            parent.setScreen(weaponDetailScreen);
-        }
-
-        @Override
-        void onAddButtonPress() {
-            GameSounds.getInstance().playSFX(GameSounds.PURCHASE_SFX_ID);
-            int value;
-            WeaponModel weaponModel = PlayerProfile.getInstance().getWeaponModel(id);
-
-            if (weaponModel.maxCapacity - weaponModel.purchaseCount >= weaponModel.capacity) {
-                value = weaponModel.value;
-                if (weaponManager == null) {
-                    weaponModel.capacity += weaponModel.purchaseCount;
-                } else {
-                    weaponManager.updateWeaponItem(id, weaponModel.purchaseCount);
-                }
-            } else {
-                int purchaseAmount = weaponModel.maxCapacity - weaponModel.capacity;
-                value = (int) (weaponModel.value * (purchaseAmount * 1.0f / weaponModel.purchaseCount));
-                if (weaponManager == null) {
-                    weaponModel.capacity += purchaseAmount;
-                } else {
-                    weaponManager.updateWeaponItem(id, purchaseAmount);
-                }
-            }
-            PlayerProfile.getInstance().addMoney(-value);
-
-            updateAllWeaponItem();
-        }
-    }
-
-    private class ResearchButton extends ItemButton {
-        Label valueLabel, levelLabel;
-        Image starImage;
-
-        public ResearchButton(int id, float width, float height, TextButtonStyle style) {
-            super(id, width, height, style);
-
-            Label.LabelStyle labelStyle = GameImages.getInstance().getLabelStyle();
-
-            valueLabel = new Label("", labelStyle);
-            valueLabel.setAlignment(Align.right);
-            valueLabel.setFontScale(Dimension.normalFontScale);
-
-            levelLabel = new Label("", labelStyle);
-            levelLabel.setAlignment(Align.center);
-            levelLabel.setFontScale(Dimension.normalFontScale);
-
-            starImage = new Image(GameImages.getInstance().getIcon(31));
-            Drawable drawable = starImage.getDrawable();
-            drawable.setMinWidth(Dimension.starIconSize);
-            drawable.setMinHeight(Dimension.starIconSize);
-
-            add(levelLabel).align(Align.right).width(100);
-            add(valueLabel).align(Align.right).width(180);
-            add(starImage).align(Align.right).padRight(Dimension.starIconSize);
-            add(addButton).padRight(Dimension.buttonSpace / 2);
-
-            setText(PlayerProfile.getInstance().getResearchModel(id).name);
-        }
-
-        @Override
-        public void update(int star) {
-            ResearchModel researchModel = PlayerProfile.getInstance().getResearchModel(id);
-            levelLabel.setText(researchModel.currentLevel + "");
-            if (researchModel.isMaximumLevel()) {
-                setDisabled(true);
-                valueLabel.setText("Max");
-                starImage.setVisible(false);
-                addButton.setVisible(false);
-                return;
-            }
-            setDisabled(false);
-            int starNeeded = researchModel.getStarOfCurrentLevel();
-            valueLabel.setText(starNeeded + "");
-            starImage.setVisible(true);
-            addButton.setVisible(star >= starNeeded);
-        }
-
-        @Override
-        void onPress() {
-            Tankzor parent = WorkshopScreen.this.getParent();
-            DocumentScreen documentScreen = parent.getDocumentScreen();
-            documentScreen.setPreviousScreen(WorkshopScreen.this);
-            ResearchModel researchModel = PlayerProfile.getInstance().getResearchModel(id);
-            documentScreen.setTitle(researchModel.name);
-            documentScreen.setContent(researchModel.description);
-            parent.setScreen(documentScreen);
-        }
-
-        @Override
-        void onAddButtonPress() {
-            GameSounds.getInstance().playSFX(GameSounds.RESEARCH_SFX_ID);
-            PlayerProfile playerProfile = PlayerProfile.getInstance();
-            ResearchModel researchModel = PlayerProfile.getInstance().getResearchModel(id);
-            playerProfile.addStar(-researchModel.getStarOfCurrentLevel());
-            researchModel.levelUp();
-            updateAllWorkshop();
-        }
     }
 }
