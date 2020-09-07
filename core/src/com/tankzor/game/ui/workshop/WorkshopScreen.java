@@ -1,4 +1,4 @@
-package com.tankzor.game.ui;
+package com.tankzor.game.ui.workshop;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
@@ -9,9 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
-import com.badlogic.gdx.scenes.scene2d.ui.HorizontalGroup;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -37,6 +35,9 @@ import com.tankzor.game.game_object.movable_item.weapon.Bullet;
 import com.tankzor.game.game_object.movable_item.weapon.WeaponManager;
 import com.tankzor.game.game_object.support_item.SupportItem;
 import com.tankzor.game.main.Tankzor;
+import com.tankzor.game.ui.BaseScreen;
+import com.tankzor.game.ui.DocumentScreen;
+import com.tankzor.game.ui.WeaponDetailScreen;
 
 /**
  * Created by Admin on 1/21/2017.
@@ -44,7 +45,11 @@ import com.tankzor.game.main.Tankzor;
 
 public class WorkshopScreen extends BaseScreen {
     private static final String BACK_BUTTON_LABEL = "Exit Workshop";
-    private static final int DRAG_PIXEL_IGNORE = 20;
+
+    // ItemButtons
+    private static final String ITEM_BUTTON_BUTTON_UPGRADE = "UpgradeButton";
+    private static final String ITEM_BUTTON_BUTTON_RESEARCH = "ResearchButton";
+    private static final String ITEM_BUTTON_BUTTON_WEAPON_ITEM = "WeaponItemButton";
 
     private ScrollPane scrollPane;
     private Stage screenStage;
@@ -60,6 +65,13 @@ public class WorkshopScreen extends BaseScreen {
 
     private WarMachineManager warMachineManager;
     private WeaponManager weaponManager;
+
+    // ItemButton parameters
+    private Integer buttonWidth;
+    private Integer buttonHeight;
+    private TextButton.TextButtonStyle buttonStyle;
+
+
 
     public WorkshopScreen(Tankzor parent, Viewport viewport, SpriteBatch batch, InputMultiplexer gameInputMultiplexer) {
         super(parent, viewport, batch, gameInputMultiplexer);
@@ -95,6 +107,23 @@ public class WorkshopScreen extends BaseScreen {
         this.previousScreen = previousScreen;
     }
 
+    // ItemButton parameters initialization
+    private void initializeButtonWidth() {
+        buttonWidth = Gdx.graphics.getWidth();
+
+    }
+    private void initializeButtonHeight() {
+        buttonHeight = Dimension.buttonHeight;
+    }
+    private void initializeButtonStyle() {
+        buttonStyle = new TextButton.TextButtonStyle();
+        buttonStyle.down = GameImages.getInstance().getUiSkin().getDrawable(GameImages.KEY_BUTTON_BACKGROUND);
+        buttonStyle.font = GameImages.getInstance().getGameFont();
+        buttonStyle.fontColor = Color.WHITE;
+        buttonStyle.disabledFontColor = Color.LIGHT_GRAY;
+        buttonStyle.overFontColor = Color.DARK_GRAY;
+    }
+
     @Override
     protected void initViews() {
         float widthScreen = Gdx.graphics.getWidth();
@@ -107,20 +136,18 @@ public class WorkshopScreen extends BaseScreen {
 
         screenTitle = new ScreenTitle(0, heightScreen - Dimension.screenTitleHeight * 1.5f, widthScreen, Dimension.screenTitleHeight * 1.5f);
 
-        TextButton.TextButtonStyle textButtonStyle = new TextButton.TextButtonStyle();
-        textButtonStyle.down = GameImages.getInstance().getUiSkin().getDrawable(GameImages.KEY_BUTTON_BACKGROUND);
-        textButtonStyle.font = GameImages.getInstance().getGameFont();
-        textButtonStyle.fontColor = Color.WHITE;
-        textButtonStyle.disabledFontColor = Color.LIGHT_GRAY;
-        textButtonStyle.overFontColor = Color.DARK_GRAY;
+        // Initialize ItemButton parameters
+        initializeButtonWidth();
+        initializeButtonHeight();
+        initializeButtonStyle();
 
-        createMenu(textButtonStyle);
+        createMenu();
 
         Drawable lineDrawable = skin.getDrawable(GameImages.KEY_SEPARATE_LINE);
         lineDrawable.setMinWidth(Dimension.separateLineWidth);
         lineImage = new Image(lineDrawable);
 
-        backButton = new TextButton(BACK_BUTTON_LABEL, textButtonStyle);
+        backButton = new TextButton(BACK_BUTTON_LABEL, buttonStyle);
         backButton.setSize(Dimension.buttonWidth, Dimension.buttonHeight);
         backButton.getLabel().setFontScale(Dimension.normalFontScale);
         backButton.addListener(new InputListener() {
@@ -137,39 +164,36 @@ public class WorkshopScreen extends BaseScreen {
         });
     }
 
-    private void createMenu(TextButton.TextButtonStyle textButtonStyle) {
+    private void createMenu() {
         mainContainer = new VerticalGroup();
         mainContainer.fill();
         mainContainer.space(Dimension.buttonSpace / 2);
-        listWorkshopMenu = new Array<WorkshopMenu>();
-
-        float itemButtonWidth = Gdx.graphics.getWidth();
-        float itemButtonHeight = Dimension.buttonHeight;
+        listWorkshopMenu = new Array<>();
 
         WorkshopMenu weaponMenu = new WorkshopMenu(1, "Basic Ammunition");
         for (int i = Bullet.NORMAL_BULLET; i <= Bullet.ARMOR_PIERCING_BULLET; i++) {
-            weaponMenu.addItemButton(new WeaponItemButton(i, itemButtonWidth, itemButtonHeight, textButtonStyle));
+            weaponMenu.addItemButton(formItemButton(ITEM_BUTTON_BUTTON_WEAPON_ITEM, i));
         }
         listWorkshopMenu.add(weaponMenu);
         mainContainer.addActor(weaponMenu);
 
         weaponMenu = new WorkshopMenu(7, "Additional Ammunition");
         for (int i = Bullet.MISSILE_BULLET; i <= AreaWeapon.AIR_STRIKE; i++) {
-            weaponMenu.addItemButton(new WeaponItemButton(i, itemButtonWidth, itemButtonHeight, textButtonStyle));
+            weaponMenu.addItemButton(formItemButton(ITEM_BUTTON_BUTTON_WEAPON_ITEM, i));
         }
         listWorkshopMenu.add(weaponMenu);
         mainContainer.addActor(weaponMenu);
 
         weaponMenu = new WorkshopMenu(16, "Allies");
-        weaponMenu.addItemButton(new WeaponItemButton(SupportItem.ALLY_TANK, itemButtonWidth, itemButtonHeight, textButtonStyle));
-        weaponMenu.addItemButton(new WeaponItemButton(SupportItem.ALLY_KAMIKAZE_TANK, itemButtonWidth, itemButtonHeight, textButtonStyle));
-        weaponMenu.addItemButton(new WeaponItemButton(SupportItem.ALLY_ARTILLERY_TANK, itemButtonWidth, itemButtonHeight, textButtonStyle));
+        weaponMenu.addItemButton(formItemButton(ITEM_BUTTON_BUTTON_WEAPON_ITEM, SupportItem.ALLY_TANK));
+        weaponMenu.addItemButton(formItemButton(ITEM_BUTTON_BUTTON_WEAPON_ITEM, SupportItem.ALLY_KAMIKAZE_TANK));
+        weaponMenu.addItemButton(formItemButton(ITEM_BUTTON_BUTTON_WEAPON_ITEM, SupportItem.ALLY_ARTILLERY_TANK));
         listWorkshopMenu.add(weaponMenu);
         mainContainer.addActor(weaponMenu);
 
         weaponMenu = new WorkshopMenu(20, "Defence");
-        weaponMenu.addItemButton(new UpgradeButton(SupportItem.TEMPORARY_ARMOR, itemButtonWidth, itemButtonHeight, textButtonStyle) {
-
+        weaponMenu.addItemButton(new UpgradeButton(SupportItem.TEMPORARY_ARMOR, buttonWidth,
+                buttonHeight, buttonStyle) {
             @Override
             void onAddButtonPress() {
                 super.onAddButtonPress();
@@ -179,8 +203,8 @@ public class WorkshopScreen extends BaseScreen {
                 }
             }
         });
-        weaponMenu.addItemButton(new UpgradeButton(SupportItem.PERMANENT_ARMOR, itemButtonWidth, itemButtonHeight, textButtonStyle) {
-
+        weaponMenu.addItemButton(new UpgradeButton(SupportItem.PERMANENT_ARMOR, buttonWidth,
+                buttonHeight, buttonStyle) {
             @Override
             void onAddButtonPress() {
                 super.onAddButtonPress();
@@ -190,21 +214,22 @@ public class WorkshopScreen extends BaseScreen {
                 }
             }
         });
-        weaponMenu.addItemButton(new WeaponItemButton(SupportItem.FORCE_FIELD, itemButtonWidth, itemButtonHeight, textButtonStyle));
+        weaponMenu.addItemButton(formItemButton(ITEM_BUTTON_BUTTON_WEAPON_ITEM, SupportItem.FORCE_FIELD));
         listWorkshopMenu.add(weaponMenu);
         mainContainer.addActor(weaponMenu);
 
         weaponMenu = new WorkshopMenu(22, "Repair");
-        weaponMenu.addItemButton(new WeaponItemButton(SupportItem.REPAIR_KIT, itemButtonWidth, itemButtonHeight, textButtonStyle));
-        TankRepairButton tankRepairButton = new TankRepairButton(itemButtonWidth, itemButtonHeight, textButtonStyle);
+        weaponMenu.addItemButton(formItemButton(ITEM_BUTTON_BUTTON_WEAPON_ITEM, SupportItem.REPAIR_KIT));
+        TankRepairButton tankRepairButton = new TankRepairButton(buttonWidth, buttonHeight, buttonStyle);
         weaponMenu.addItemButton(tankRepairButton);
-        allyTankRepairButton = new AllyTankRepairButton(itemButtonWidth, itemButtonHeight, textButtonStyle);
+        allyTankRepairButton = new AllyTankRepairButton(buttonWidth, buttonHeight, buttonStyle);
         weaponMenu.addItemButton(allyTankRepairButton);
         listWorkshopMenu.add(weaponMenu);
         mainContainer.addActor(weaponMenu);
 
         weaponMenu = new WorkshopMenu(25, "Other");
-        weaponMenu.addItemButton(new UpgradeButton(SupportItem.RADAR, itemButtonWidth, itemButtonHeight, textButtonStyle) {
+        weaponMenu.addItemButton(new UpgradeButton(SupportItem.RADAR, buttonWidth,
+                buttonHeight, buttonStyle) {
             @Override
             void onAddButtonPress() {
                 PlayerProfile playerProfileInstance = PlayerProfile.getInstance();
@@ -214,7 +239,8 @@ public class WorkshopScreen extends BaseScreen {
                 super.onAddButtonPress();
             }
         });
-        weaponMenu.addItemButton(new UpgradeButton(SupportItem.THERMOVISION, itemButtonWidth, itemButtonHeight, textButtonStyle) {
+        weaponMenu.addItemButton(new UpgradeButton(SupportItem.THERMOVISION, buttonWidth,
+                buttonHeight, buttonStyle) {
             @Override
             void onAddButtonPress() {
                 super.onAddButtonPress();
@@ -223,7 +249,8 @@ public class WorkshopScreen extends BaseScreen {
                 }
             }
         });
-        weaponMenu.addItemButton(new UpgradeButton(SupportItem.UPGRADE_TANK, itemButtonWidth, itemButtonHeight, textButtonStyle) {
+        weaponMenu.addItemButton(new UpgradeButton(SupportItem.UPGRADE_TANK, buttonWidth,
+                buttonHeight, buttonStyle) {
             @Override
             void onAddButtonPress() {
                 if (warMachineManager != null) {
@@ -240,10 +267,10 @@ public class WorkshopScreen extends BaseScreen {
                 super.onAddButtonPress();
             }
         });
-        weaponMenu.addItemButton(new WeaponItemButton(SupportItem.BOOST_SPEED, itemButtonWidth, itemButtonHeight, textButtonStyle));
-        weaponMenu.addItemButton(new WeaponItemButton(SupportItem.TIME_FREEZE, itemButtonWidth, itemButtonHeight, textButtonStyle));
-        weaponMenu.addItemButton(new UpgradeButton(SupportItem.LIFE_ITEM, itemButtonWidth, itemButtonHeight, textButtonStyle) {
-
+        weaponMenu.addItemButton(formItemButton(ITEM_BUTTON_BUTTON_WEAPON_ITEM, SupportItem.BOOST_SPEED));
+        weaponMenu.addItemButton(formItemButton(ITEM_BUTTON_BUTTON_WEAPON_ITEM, SupportItem.TIME_FREEZE));
+        weaponMenu.addItemButton(new UpgradeButton(SupportItem.LIFE_ITEM,
+                buttonWidth, buttonHeight, buttonStyle) {
             @Override
             void onAddButtonPress() {
                 GameSounds.getInstance().playSFX(GameSounds.PURCHASE_SFX_ID);
@@ -256,14 +283,22 @@ public class WorkshopScreen extends BaseScreen {
         mainContainer.addActor(weaponMenu);
 
         researchMenu = new WorkshopMenu(19, "Research");
-        researchMenu.addItemButton(new ResearchButton(ResearchModel.ADDITIONAL_INTEREST_RESEARCH_ID, itemButtonWidth, itemButtonHeight, textButtonStyle));
-        researchMenu.addItemButton(new ResearchButton(ResearchModel.ROUNDS_RESEARCH_ID, itemButtonWidth, itemButtonHeight, textButtonStyle));
-        researchMenu.addItemButton(new ResearchButton(ResearchModel.ARTILLERY_RESEARCH_ID, itemButtonWidth, itemButtonHeight, textButtonStyle));
-        researchMenu.addItemButton(new ResearchButton(ResearchModel.MISSILES_RESEARCH_ID, itemButtonWidth, itemButtonHeight, textButtonStyle));
-        researchMenu.addItemButton(new ResearchButton(ResearchModel.MINES_RESEARCH_ID, itemButtonWidth, itemButtonHeight, textButtonStyle));
-        researchMenu.addItemButton(new ResearchButton(ResearchModel.DYNAMITE_RESEARCH_ID, itemButtonWidth, itemButtonHeight, textButtonStyle));
-        researchMenu.addItemButton(new ResearchButton(ResearchModel.ARMOR_RESEARCH_ID, itemButtonWidth, itemButtonHeight, textButtonStyle));
-        researchMenu.addItemButton(new ResearchButton(ResearchModel.FORCE_FIELD_RESEARCH_ID, itemButtonWidth, itemButtonHeight, textButtonStyle) {
+        researchMenu.addItemButton(formItemButton(ITEM_BUTTON_BUTTON_RESEARCH,
+                ResearchModel.ADDITIONAL_INTEREST_RESEARCH_ID));
+        researchMenu.addItemButton(formItemButton(ITEM_BUTTON_BUTTON_RESEARCH,
+                ResearchModel.ROUNDS_RESEARCH_ID));
+        researchMenu.addItemButton(formItemButton(ITEM_BUTTON_BUTTON_RESEARCH,
+                ResearchModel.ARTILLERY_RESEARCH_ID));
+        researchMenu.addItemButton(formItemButton(ITEM_BUTTON_BUTTON_RESEARCH,
+                ResearchModel.MISSILES_RESEARCH_ID));
+        researchMenu.addItemButton(formItemButton(ITEM_BUTTON_BUTTON_RESEARCH,
+                ResearchModel.MINES_RESEARCH_ID));
+        researchMenu.addItemButton(formItemButton(ITEM_BUTTON_BUTTON_RESEARCH,
+                ResearchModel.DYNAMITE_RESEARCH_ID));
+        researchMenu.addItemButton(formItemButton(ITEM_BUTTON_BUTTON_RESEARCH,
+                ResearchModel.ARMOR_RESEARCH_ID));
+        researchMenu.addItemButton(new ResearchButton(ResearchModel.FORCE_FIELD_RESEARCH_ID,
+                buttonWidth, buttonHeight, buttonStyle) {
             @Override
             void onAddButtonPress() {
                 super.onAddButtonPress();
@@ -274,9 +309,32 @@ public class WorkshopScreen extends BaseScreen {
                 }
             }
         });
-        researchMenu.addItemButton(new ResearchButton(ResearchModel.AIR_STRIKE_RESEARCH_ID, itemButtonWidth, itemButtonHeight, textButtonStyle));
-        researchMenu.addItemButton(new ResearchButton(ResearchModel.ALLY_TANK_RESEARCH_ID, itemButtonWidth, itemButtonHeight, textButtonStyle));
+        researchMenu.addItemButton(formItemButton(ITEM_BUTTON_BUTTON_RESEARCH,
+                ResearchModel.AIR_STRIKE_RESEARCH_ID));
+        researchMenu.addItemButton(formItemButton(ITEM_BUTTON_BUTTON_RESEARCH,
+                ResearchModel.ALLY_TANK_RESEARCH_ID));
         mainContainer.addActor(researchMenu);
+    }
+
+    private ItemButton formItemButton(String itemButtonId, Integer additionalButtonId) {
+        ItemButton button = null;
+
+        switch (itemButtonId) {
+            case ITEM_BUTTON_BUTTON_UPGRADE: {
+                button = new UpgradeButton(additionalButtonId, buttonWidth, buttonHeight, buttonStyle);
+                break;
+            }
+            case ITEM_BUTTON_BUTTON_WEAPON_ITEM: {
+                button = new WeaponItemButton(additionalButtonId, buttonWidth, buttonHeight, buttonStyle);
+                break;
+            }
+            case ITEM_BUTTON_BUTTON_RESEARCH: {
+                button = new ResearchButton(additionalButtonId, buttonWidth, buttonHeight, buttonStyle);
+                break;
+            }
+        }
+
+        return button;
     }
 
     @Override
@@ -355,34 +413,6 @@ public class WorkshopScreen extends BaseScreen {
         }
     }
 
-    private class MenuTitle extends Group {
-
-        MenuTitle(int iconId, String title, float width, float height) {
-            setSize(width, height);
-            Skin skin = GameImages.getInstance().getUiSkin();
-            Image background = new Image(skin.getDrawable(GameImages.KEY_TITLE_MENU_ITEM_BACKGROUND));
-            background.setBounds(0, 0, width, height);
-            addActor(background);
-
-            Image icon = new Image(GameImages.getInstance().getIcon(iconId));
-            Drawable drawable = icon.getDrawable();
-            drawable.setMinWidth(Dimension.smallIconSize);
-            drawable.setMinHeight(Dimension.smallIconSize);
-            Label label = new Label(title, GameImages.getInstance().getLabelStyle());
-            label.setFontScale(Dimension.quiteLargeFontScale);
-
-            HorizontalGroup horizontalGroup = new HorizontalGroup();
-            horizontalGroup.setBounds(0, 0, width, height);
-            horizontalGroup.padLeft(Dimension.buttonSpace / 2);
-            horizontalGroup.space(Dimension.buttonSpace / 2);
-            horizontalGroup.align(Align.left);
-
-            horizontalGroup.addActor(icon);
-            horizontalGroup.addActor(label);
-            addActor(horizontalGroup);
-        }
-    }
-
     private class ScreenTitle extends Group {
         Label moneyLabel, starLabel, lifeLabel;
         Image background;
@@ -456,103 +486,6 @@ public class WorkshopScreen extends BaseScreen {
             starLabel.setText(playerProfile.getStar() + "");
             lifeLabel.setText(playerProfile.getLife() + "");
         }
-    }
-
-    private abstract class ItemButton extends TextButton {
-        ImageButton addButton;
-        float xTouchDown, yTouchDown;
-        boolean isDragged;
-        boolean isTouchChild = false;
-        int id;
-
-        ItemButton(int id, float width, float height, TextButtonStyle style) {
-            super("", style);
-            this.id = id;
-            setSize(width, height);
-
-            padLeft(Dimension.buttonSpace);
-            padRight(Dimension.buttonSpace);
-            Label buttonLabel = getLabel();
-            buttonLabel.setAlignment(Align.left);
-            buttonLabel.setFontScale(Dimension.normalFontScale);
-
-            addListener(new InputListener() {
-                @Override
-                public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                    if (isTouchChild) {
-                        return false;
-                    }
-                    xTouchDown = x;
-                    yTouchDown = y;
-                    return true;
-                }
-
-                @Override
-                public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                    if (isDragged) {
-                        isDragged = false;
-                        return;
-                    }
-                    onPress();
-                }
-
-                @Override
-                public void touchDragged(InputEvent event, float x, float y, int pointer) {
-                    if (Math.abs(xTouchDown - x) > DRAG_PIXEL_IGNORE || Math.abs(yTouchDown - y) > DRAG_PIXEL_IGNORE) {
-                        isDragged = true;
-                    }
-                }
-            });
-
-            Skin skin = GameImages.getInstance().getUiSkin();
-            ImageButton.ImageButtonStyle imageButtonStyle = new ImageButton.ImageButtonStyle();
-            Drawable drawable = skin.getDrawable(GameImages.KEY_ADD_BUTTON_PRESS_BACKGROUND);
-            drawable.setMinWidth(Dimension.smallIconSize);
-            drawable.setMinHeight(Dimension.smallIconSize);
-            imageButtonStyle.imageDown = drawable;
-            imageButtonStyle.imageOver = drawable;
-            imageButtonStyle.imageDisabled = drawable;
-            drawable = skin.getDrawable(GameImages.KEY_ADD_BUTTON_NORMAL_BACKGROUND);
-            drawable.setMinWidth(Dimension.mediumIconSize);
-            drawable.setMinHeight(Dimension.mediumIconSize);
-            imageButtonStyle.imageUp = drawable;
-            addButton = new ImageButton(imageButtonStyle);
-            addButton.setVisible(false);
-            addButton.addListener(new InputListener() {
-                @Override
-                public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                    xTouchDown = x;
-                    yTouchDown = y;
-                    isTouchChild = true;
-                    return true;
-                }
-
-                @Override
-                public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                    isTouchChild = false;
-                    if (isDragged) {
-                        isDragged = false;
-                        return;
-                    }
-                    onAddButtonPress();
-                }
-
-                @Override
-                public void touchDragged(InputEvent event, float x, float y, int pointer) {
-                    if (Math.abs(xTouchDown - x) > DRAG_PIXEL_IGNORE || Math.abs(yTouchDown - y) > DRAG_PIXEL_IGNORE) {
-                        isDragged = true;
-                    }
-                }
-            });
-
-            setTouchable(Touchable.childrenOnly);
-        }
-
-        abstract void update(int value);
-
-        abstract void onPress();
-
-        abstract void onAddButtonPress();
     }
 
     private class UpgradeButton extends ItemButton {

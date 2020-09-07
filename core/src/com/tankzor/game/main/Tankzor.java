@@ -27,7 +27,7 @@ import com.tankzor.game.ui.ListRoomScreen;
 import com.tankzor.game.ui.PauseScreen;
 import com.tankzor.game.ui.RoomScreen;
 import com.tankzor.game.ui.SettingsScreen;
-import com.tankzor.game.ui.WorkshopScreen;
+import com.tankzor.game.ui.workshop.WorkshopScreen;
 import com.tankzor.game.ui.WeaponDetailScreen;
 
 /**

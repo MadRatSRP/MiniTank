@@ -19,6 +19,7 @@ import com.tankzor.game.common_value.Dimension;
 import com.tankzor.game.common_value.GameImages;
 import com.tankzor.game.common_value.PlayerProfile;
 import com.tankzor.game.main.Tankzor;
+import com.tankzor.game.ui.workshop.WorkshopScreen;
 
 /**
  * Created by Admin on 12/27/2016.
@@ -89,7 +90,7 @@ public class ObjectiveScreen extends BaseScreen {
             }
         });
 
-        workshopButton = new TextButton(MenuScreen.BUTTON_SHOP_LABEL, buttonStyle);
+        workshopButton = new TextButton(MenuScreen.BUTTON_LABEL_WORKSHOP, buttonStyle);
         workshopButton.setSize(Dimension.buttonWidth, Dimension.buttonHeight);
         workshopButton.getLabel().setFontScale(Dimension.normalFontScale);
         workshopButton.addListener(new InputListener() {

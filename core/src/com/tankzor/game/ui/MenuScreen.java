@@ -15,12 +15,18 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.tankzor.game.common_value.Dimension;
 import com.tankzor.game.common_value.GameImages;
 import com.tankzor.game.main.Tankzor;
+import com.tankzor.game.ui.workshop.WorkshopScreen;
 
 /**
  * Created by Admin on 12/27/2016.
  */
 public class MenuScreen extends BaseScreen {
-    public static final String BUTTON_SHOP_LABEL = "Workshop";
+    // Constants
+    private final String BUTTON_LABEL_CAMPAIGN = "Campaign";
+    private final String BUTTON_LABEL_ONLINE_MATCH = "Online Match";
+    public static final String BUTTON_LABEL_WORKSHOP = "Workshop";
+    private final String BUTTON_LABEL_SETTINGS = "Settings";
+
     private Stage screenStage;
     private TextButton campaignButton;
     private TextButton onlineMatchButton;
@@ -34,11 +40,11 @@ public class MenuScreen extends BaseScreen {
 
     @Override
     protected void initViews() {
-        Skin skin = GameImages.getInstance().getUiSkin();
+        final Skin skin = GameImages.getInstance().getUiSkin();
 
         tankBackground = new TankBackground();
 
-        TextButton.TextButtonStyle buttonStyle = new TextButton.TextButtonStyle();
+        final TextButton.TextButtonStyle buttonStyle = new TextButton.TextButtonStyle();
         buttonStyle.down = skin.getDrawable(GameImages.KEY_BUTTON_BACKGROUND);
         buttonStyle.down.setMinWidth(Dimension.buttonWidth);
         buttonStyle.down.setMinHeight(Dimension.buttonHeight);
@@ -47,9 +53,7 @@ public class MenuScreen extends BaseScreen {
         buttonStyle.disabledFontColor = Color.DARK_GRAY;
         buttonStyle.overFontColor = Color.LIGHT_GRAY;
 
-        campaignButton = new TextButton("Campaign", buttonStyle);
-        campaignButton.setSize(Dimension.buttonWidth, Dimension.buttonHeight);
-        campaignButton.getLabel().setFontScale(Dimension.normalFontScale);
+        campaignButton = createStylizedTextButton(BUTTON_LABEL_CAMPAIGN, buttonStyle);
         campaignButton.addListener(new InputListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
@@ -58,14 +62,11 @@ public class MenuScreen extends BaseScreen {
 
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                Tankzor parent = getParent();
-                parent.setScreen(parent.getListMissionScreen());
+                onButtonTouchUpClicked(BUTTON_LABEL_CAMPAIGN);
             }
         });
 
-        onlineMatchButton = new TextButton("Online Match", buttonStyle);
-        onlineMatchButton.setSize(Dimension.buttonWidth, Dimension.buttonHeight);
-        onlineMatchButton.getLabel().setFontScale(Dimension.normalFontScale);
+        onlineMatchButton = createStylizedTextButton(BUTTON_LABEL_ONLINE_MATCH, buttonStyle);
         onlineMatchButton.addListener(new InputListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
@@ -74,21 +75,11 @@ public class MenuScreen extends BaseScreen {
 
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                Tankzor parent = getParent();
-                ListRoomScreen listRoomScreen = parent.getListRoomScreen();
-                try {
-                    listRoomScreen.initAppWarp();
-                    listRoomScreen.showEnterNameDialog();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                parent.setScreen(listRoomScreen);
+                onButtonTouchUpClicked(BUTTON_LABEL_ONLINE_MATCH);
             }
         });
 
-        workshopButton = new TextButton(BUTTON_SHOP_LABEL, buttonStyle);
-        workshopButton.setSize(Dimension.buttonWidth, Dimension.buttonHeight);
-        workshopButton.getLabel().setFontScale(Dimension.normalFontScale);
+        workshopButton = createStylizedTextButton(BUTTON_LABEL_WORKSHOP, buttonStyle);
         workshopButton.addListener(new InputListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
@@ -97,16 +88,11 @@ public class MenuScreen extends BaseScreen {
 
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                Tankzor parent = getParent();
-                WorkshopScreen workshopScreen = parent.getWorkshopScreen();
-                workshopScreen.setPreviousScreen(MenuScreen.this);
-                parent.setScreen(workshopScreen);
+               onButtonTouchUpClicked(BUTTON_LABEL_WORKSHOP);
             }
         });
 
-        settingButton = new TextButton("Settings", buttonStyle);
-        settingButton.setSize(Dimension.buttonWidth, Dimension.buttonHeight);
-        settingButton.getLabel().setFontScale(Dimension.normalFontScale);
+        settingButton = createStylizedTextButton(BUTTON_LABEL_SETTINGS, buttonStyle);
         settingButton.addListener(new InputListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
@@ -115,12 +101,51 @@ public class MenuScreen extends BaseScreen {
 
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                Tankzor parent = getParent();
-                SettingsScreen settingsScreen = parent.getSettingsScreen();
-                settingsScreen.setPreviousScreen(MenuScreen.this);
-                parent.setScreen(parent.getSettingsScreen());
+                onButtonTouchUpClicked(BUTTON_LABEL_SETTINGS);
             }
         });
+    }
+
+    private TextButton createStylizedTextButton(String buttonName,
+                                                TextButton.TextButtonStyle buttonStyle) {
+        final TextButton button = new TextButton(buttonName, buttonStyle);
+        button.setSize(Dimension.buttonWidth, Dimension.buttonHeight);
+        button.getLabel().setFontScale(Dimension.normalFontScale);
+        return button;
+    }
+
+    private void onButtonTouchUpClicked(String buttonId) {
+        final Tankzor parent = getParent();
+
+        switch (buttonId) {
+            case BUTTON_LABEL_CAMPAIGN: {
+                parent.setScreen(parent.getListMissionScreen());
+                break;
+            }
+            case BUTTON_LABEL_ONLINE_MATCH: {
+                final ListRoomScreen listRoomScreen = parent.getListRoomScreen();
+                try {
+                    listRoomScreen.initAppWarp();
+                    listRoomScreen.showEnterNameDialog();
+                } catch (Exception exception) {
+                    exception.printStackTrace();
+                }
+                parent.setScreen(listRoomScreen);
+                break;
+            }
+            case BUTTON_LABEL_WORKSHOP: {
+                final WorkshopScreen workshopScreen = parent.getWorkshopScreen();
+                workshopScreen.setPreviousScreen(MenuScreen.this);
+                parent.setScreen(workshopScreen);
+                break;
+            }
+            case BUTTON_LABEL_SETTINGS: {
+                final SettingsScreen settingsScreen = parent.getSettingsScreen();
+                settingsScreen.setPreviousScreen(MenuScreen.this);
+                parent.setScreen(parent.getSettingsScreen());
+                break;
+            }
+        }
     }
 
     @Override
@@ -128,10 +153,10 @@ public class MenuScreen extends BaseScreen {
         screenStage = new Stage(getViewport(), getBatch());
         screenStage.addActor(tankBackground);
 
-        int widthScreen = Gdx.graphics.getWidth();
-        int heightScreen = Gdx.graphics.getHeight();
+        final int widthScreen = Gdx.graphics.getWidth();
+        final int heightScreen = Gdx.graphics.getHeight();
 
-        Table table = new Table();
+        final Table table = new Table();
         table.add(campaignButton).padBottom(Dimension.buttonSpace).align(Align.center).row();
         table.add(onlineMatchButton).padBottom(Dimension.buttonSpace).align(Align.center).row();
         table.add(workshopButton).padBottom(Dimension.buttonSpace).align(Align.center).row();
