@@ -6,9 +6,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.shephertz.app42.gaming.multiplayer.client.WarpClient;
 import com.shephertz.app42.gaming.multiplayer.client.events.UpdateEvent;
-import com.shephertz.app42.gaming.multiplayer.client.listener.NotifyListener;
 import com.tankzor.game.common_value.AssetLoader;
-import com.tankzor.game.common_value.GameSounds;
+import com.tankzor.game.game_resources.GameSounds;
 import com.tankzor.game.common_value.PlayerProfile;
 import com.tankzor.game.game_object.manager.AirManager;
 import com.tankzor.game.game_object.manager.BulletManager;
@@ -53,45 +52,35 @@ public class GameScreen extends BaseScreen {
     public void initAndStartCampaignMap(int level) {
         this.level = level;
         Network.init(false, warMachineManager);
-        Gdx.app.postRunnable(new Runnable() {
-            @Override
-            public void run() {
-                Tankzor parent = getParent();
-                parent.setScreen(parent.getLoadingScreen());
+        Gdx.app.postRunnable(() -> {
+            Tankzor parent = getParent();
+            parent.setScreen(parent.getLoadingScreen());
 
-                assetLoader.loadAsset();
-                weaponManager.initListWeaponItems(PlayerProfile.getInstance().getListWeaponModels());
+            assetLoader.loadAsset();
+            weaponManager.initListWeaponItems(PlayerProfile.getInstance().getListWeaponModels());
 
-                gameHUD.initHUD(assetLoader);
+            gameHUD.initHUD(assetLoader);
 
-                gameHUD.getTouchScreenStage().setTerrainManager(terrainManager);
-                gameHUD.getTouchScreenStage().setGameCamera(playerCamera);
-                gameHUD.getTouchScreenStage().setBulletManager(bulletManager);
-                gameHUD.setTouchPadInputEventListener(warMachineManager);
+            gameHUD.getTouchScreenStage().setTerrainManager(terrainManager);
+            gameHUD.getTouchScreenStage().setGameCamera(playerCamera);
+            gameHUD.getTouchScreenStage().setBulletManager(bulletManager);
+            gameHUD.setTouchPadInputEventListener(warMachineManager);
 
-                lightingManager.initWorld();
-                terrainManager.initLevel(GameScreen.this.level);
+            lightingManager.initWorld();
+            terrainManager.initLevel(GameScreen.this.level);
 
-                GameSounds.getInstance().prepareBackgroundMusic();
-                parent.setScreen(GameScreen.this);
-            }
+            GameSounds.getInstance().prepareBackgroundMusic();
+            parent.setScreen(GameScreen.this);
         });
     }
 
     private MessageResolver messageResolver = new MessageResolver() {
         @Override
         protected void onMessageReceived(int messageId, JSONObject jsonObject) {
-            switch (messageId){
-                case MessageCreator.WAR_MACHINE_ROTATE_MESSAGE:{
-                    Network.getInstance()
-                            .rotateWarMachine(jsonObject.getString(MessageCreator.NAME),
-                                            jsonObject.getInt(MessageCreator.ORIENT));
-                }
-                break;
-
-                default:{
-                    break;
-                }
+            if (messageId == MessageCreator.WAR_MACHINE_ROTATE_MESSAGE) {
+                Network.getInstance()
+                        .rotateWarMachine(jsonObject.getString(MessageCreator.NAME),
+                                jsonObject.getInt(MessageCreator.ORIENT));
             }
         }
     };
@@ -108,28 +97,25 @@ public class GameScreen extends BaseScreen {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        Gdx.app.postRunnable(new Runnable() {
-            @Override
-            public void run() {
-                Tankzor parent = getParent();
-                parent.setScreen(parent.getLoadingScreen());
+        Gdx.app.postRunnable(() -> {
+            Tankzor parent = getParent();
+            parent.setScreen(parent.getLoadingScreen());
 
-                assetLoader.loadAsset();
-                weaponManager.initListWeaponItems(PlayerProfile.getInstance().getListWeaponModels());
+            assetLoader.loadAsset();
+            weaponManager.initListWeaponItems(PlayerProfile.getInstance().getListWeaponModels());
 
-                gameHUD.initHUD(assetLoader);
+            gameHUD.initHUD(assetLoader);
 
-                gameHUD.getTouchScreenStage().setTerrainManager(terrainManager);
-                gameHUD.getTouchScreenStage().setGameCamera(playerCamera);
-                gameHUD.getTouchScreenStage().setBulletManager(bulletManager);
-                gameHUD.setTouchPadInputEventListener(warMachineManager);
+            gameHUD.getTouchScreenStage().setTerrainManager(terrainManager);
+            gameHUD.getTouchScreenStage().setGameCamera(playerCamera);
+            gameHUD.getTouchScreenStage().setBulletManager(bulletManager);
+            gameHUD.setTouchPadInputEventListener(warMachineManager);
 
-                lightingManager.initWorld();
-                terrainManager.startOnlineMap(mapName, index);
+            lightingManager.initWorld();
+            terrainManager.startOnlineMap(mapName, index);
 
-                GameSounds.getInstance().prepareBackgroundMusic();
-                parent.setScreen(GameScreen.this);
-            }
+            GameSounds.getInstance().prepareBackgroundMusic();
+            parent.setScreen(GameScreen.this);
         });
     }
 

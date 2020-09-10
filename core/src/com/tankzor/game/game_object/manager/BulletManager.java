@@ -5,7 +5,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Pool;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.tankzor.game.common_value.AssetLoader;
-import com.tankzor.game.common_value.GameSounds;
+import com.tankzor.game.game_resources.GameSounds;
 import com.tankzor.game.common_value.PlayerProfile;
 import com.tankzor.game.common_value.WeaponModel;
 import com.tankzor.game.game_object.DamagedEntity;

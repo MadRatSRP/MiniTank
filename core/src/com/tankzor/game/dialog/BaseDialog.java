@@ -5,8 +5,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.utils.Align;
-import com.tankzor.game.common_value.Dimension;
-import com.tankzor.game.common_value.GameImages;
+import com.tankzor.game.game_resources.GameImages;
 
 /**
  * Created by Admin on 6/7/2017.

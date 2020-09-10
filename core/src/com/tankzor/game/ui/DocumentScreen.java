@@ -17,7 +17,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.tankzor.game.common_value.Dimension;
-import com.tankzor.game.common_value.GameImages;
+import com.tankzor.game.game_resources.GameImages;
 import com.tankzor.game.main.Tankzor;
 
 /**

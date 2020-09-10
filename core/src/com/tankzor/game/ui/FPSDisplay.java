@@ -6,7 +6,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.tankzor.game.common_value.GameImages;
+import com.tankzor.game.game_resources.GameImages;
 
 /**
  * Created by Admin on 4/29/2017.

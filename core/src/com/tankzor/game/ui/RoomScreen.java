@@ -32,7 +32,7 @@ import com.shephertz.app42.gaming.multiplayer.client.events.RoomData;
 import com.shephertz.app42.gaming.multiplayer.client.events.RoomEvent;
 import com.shephertz.app42.gaming.multiplayer.client.events.UpdateEvent;
 import com.tankzor.game.common_value.Dimension;
-import com.tankzor.game.common_value.GameImages;
+import com.tankzor.game.game_resources.GameImages;
 import com.tankzor.game.dialog.DialogManager;
 import com.tankzor.game.dialog.LoadingDialog;
 import com.tankzor.game.dialog.MessageDialog;
@@ -42,7 +42,6 @@ import com.tankzor.game.network.NotifyAdapter;
 import com.tankzor.game.network.RoomRequestAdapter;
 import com.tankzor.game.network.message.MessageCreator;
 import com.tankzor.game.network.message.MessageResolver;
-import com.tankzor.game.util.FloatPoint;
 
 import org.json.JSONObject;
 

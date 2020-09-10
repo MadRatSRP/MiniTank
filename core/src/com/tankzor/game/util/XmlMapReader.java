@@ -139,80 +139,68 @@ public class XmlMapReader {
     public static Array<ListMissionScreen.MissionItem> readListMissionXml() {
         Array<ListMissionScreen.MissionItem> result = null;
         XmlReader reader = new XmlReader();
-        try {
-            XmlReader.Element root = reader.parse(Gdx.files.internal("maps/list_mission.xml"));
-            Array<XmlReader.Element> elements = root.getChildrenByName("item");
-            int size = elements.size;
-            result = new Array<ListMissionScreen.MissionItem>();
-            for (int i = 0; i < size; i++) {
-                result.add(new ListMissionScreen
-                        .MissionItem(elements.get(i).getAttribute(NAME_ATTRIBUTE),
-                        elements.get(i).getAttribute(HINT_ATTRIBUTE),
-                        elements.get(i).getAttribute(OBJECTIVE_ATTRIBUTE)));
-            }
-
-        } catch (IOException e) {
-            e.printStackTrace();
+        XmlReader.Element root = reader.parse(Gdx.files.internal("maps/list_mission.xml"));
+        Array<XmlReader.Element> elements = root.getChildrenByName("item");
+        int size = elements.size;
+        result = new Array<ListMissionScreen.MissionItem>();
+        for (int i = 0; i < size; i++) {
+            result.add(new ListMissionScreen
+                    .MissionItem(elements.get(i).getAttribute(NAME_ATTRIBUTE),
+                    elements.get(i).getAttribute(HINT_ATTRIBUTE),
+                    elements.get(i).getAttribute(OBJECTIVE_ATTRIBUTE)));
         }
+
         return result;
     }
 
     public void parseOnlineMatchXml(String filename, int index){
-        try {
-            XmlReader.Element root = mapReader.parse(Gdx.files.internal(filename));
+        XmlReader.Element root = mapReader.parse(Gdx.files.internal(filename));
 
-            lightingManager.setDayMode(getDayMode(root));
+        lightingManager.setDayMode(getDayMode(root));
 
-            Array<XmlReader.Element> elements = root.getChildByName(PLAYER).getChildrenByName(SPAWN_LOCATION);
-            warMachineManager.initPlayerSpawnLocation(getLocation(elements.get(index)));
+        Array<XmlReader.Element> elements = root.getChildByName(PLAYER).getChildrenByName(SPAWN_LOCATION);
+        warMachineManager.initPlayerSpawnLocation(getLocation(elements.get(index)));
 
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     public void parseCampaignXml(String fileName) {
-        try {
-            XmlReader.Element root = mapReader.parse(Gdx.files.internal(fileName));
+        XmlReader.Element root = mapReader.parse(Gdx.files.internal(fileName));
 
-            lightingManager.setDayMode(getDayMode(root));
+        lightingManager.setDayMode(getDayMode(root));
 
-            createGameMode(root);
+        createGameMode(root);
 
-            createPalmsTree(root);
+        createPalmsTree(root);
 
-            createFlags(root.getChildByName(WIN_CONDITION));
+        createFlags(root.getChildByName(WIN_CONDITION));
 
-            XmlReader.Element remoteElement = root.getChildByName(REMOTE);
-            if (remoteElement != null) {
-                setupRemoteExplosion(remoteElement);
-                setupRemoteAirStrike(remoteElement);
-            }
-
-            XmlReader.Element enemiesElement = root.getChildByName(ENEMIES);
-            if (enemiesElement != null) {
-                createRoundSet(enemiesElement, warMachineManager.getEnemySpawnRoundSet(), DamagedEntity.ENEMIES_TEAM);
-                createTurret(enemiesElement, DamagedEntity.ENEMIES_TEAM);
-                createBuildings(enemiesElement, DamagedEntity.ENEMIES_TEAM);
-                createMines(enemiesElement, DamagedEntity.ENEMIES_TEAM);
-            }
-            warMachineManager.calculateCurrentEnemiesLeft();
-
-            warMachineManager.initPlayerSpawnLocation(getLocation(root.getChildByName(PLAYER).getChildByName(SPAWN_LOCATION)));
-
-            XmlReader.Element alliesElement = root.getChildByName(ALLIES);
-            if (alliesElement != null) {
-                createRoundSet(alliesElement, warMachineManager.getAlliesSpawnRoundSet(), DamagedEntity.ALLIES_TEAM);
-                createTurret(alliesElement, DamagedEntity.ALLIES_TEAM);
-                createBuildings(alliesElement, DamagedEntity.ALLIES_TEAM);
-                createMines(alliesElement, DamagedEntity.ALLIES_TEAM);
-            }
-
-            createItem(root);
-
-        } catch (IOException e) {
-            e.printStackTrace();
+        XmlReader.Element remoteElement = root.getChildByName(REMOTE);
+        if (remoteElement != null) {
+            setupRemoteExplosion(remoteElement);
+            setupRemoteAirStrike(remoteElement);
         }
+
+        XmlReader.Element enemiesElement = root.getChildByName(ENEMIES);
+        if (enemiesElement != null) {
+            createRoundSet(enemiesElement, warMachineManager.getEnemySpawnRoundSet(), DamagedEntity.ENEMIES_TEAM);
+            createTurret(enemiesElement, DamagedEntity.ENEMIES_TEAM);
+            createBuildings(enemiesElement, DamagedEntity.ENEMIES_TEAM);
+            createMines(enemiesElement, DamagedEntity.ENEMIES_TEAM);
+        }
+        warMachineManager.calculateCurrentEnemiesLeft();
+
+        warMachineManager.initPlayerSpawnLocation(getLocation(root.getChildByName(PLAYER).getChildByName(SPAWN_LOCATION)));
+
+        XmlReader.Element alliesElement = root.getChildByName(ALLIES);
+        if (alliesElement != null) {
+            createRoundSet(alliesElement, warMachineManager.getAlliesSpawnRoundSet(), DamagedEntity.ALLIES_TEAM);
+            createTurret(alliesElement, DamagedEntity.ALLIES_TEAM);
+            createBuildings(alliesElement, DamagedEntity.ALLIES_TEAM);
+            createMines(alliesElement, DamagedEntity.ALLIES_TEAM);
+        }
+
+        createItem(root);
+
     }
 
     private int getDayMode(XmlReader.Element rootElement) {

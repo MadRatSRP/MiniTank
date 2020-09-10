@@ -3,7 +3,7 @@ package com.tankzor.game.game_object.support_item;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Action;
-import com.tankzor.game.common_value.GameSounds;
+import com.tankzor.game.game_resources.GameSounds;
 import com.tankzor.game.game_object.GameEntity;
 import com.tankzor.game.game_object.animation.BaseAnimation;
 import com.tankzor.game.game_object.light.ItemPointLight;

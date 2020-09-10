@@ -1,6 +1,6 @@
 package com.tankzor.game.ui.workshop;
 
-import com.tankzor.game.common_value.GameSounds;
+import com.tankzor.game.game_resources.GameSounds;
 import com.tankzor.game.common_value.PlayerProfile;
 import com.tankzor.game.game_object.manager.WarMachineManager;
 import com.tankzor.game.game_object.movable_item.war_machine.movable_machine.PlayerWarMachine;

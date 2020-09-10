@@ -1,9 +1,8 @@
 package com.tankzor.game.game_object.support_item;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.tankzor.game.common_value.GameSounds;
+import com.tankzor.game.game_resources.GameSounds;
 import com.tankzor.game.game_object.DamagedEntity;
-import com.tankzor.game.game_object.GameEntity;
 import com.tankzor.game.game_object.decorations.Ring;
 import com.tankzor.game.game_object.movable_item.war_machine.WarMachine;
 import com.tankzor.game.game_object.movable_item.war_machine.movable_machine.PlayerWarMachine;

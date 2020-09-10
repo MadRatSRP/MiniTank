@@ -8,7 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.utils.Align;
 import com.tankzor.game.common_value.Dimension;
-import com.tankzor.game.common_value.GameImages;
+import com.tankzor.game.game_resources.GameImages;
 import com.tankzor.game.game_object.movable_item.weapon.OnWeaponCapacityListener;
 import com.tankzor.game.game_object.movable_item.weapon.WeaponManager;
 

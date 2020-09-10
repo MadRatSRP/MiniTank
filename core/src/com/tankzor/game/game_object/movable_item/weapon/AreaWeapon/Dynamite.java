@@ -2,12 +2,11 @@ package com.tankzor.game.game_object.movable_item.weapon.AreaWeapon;
 
 import com.badlogic.gdx.scenes.scene2d.actions.DelayAction;
 import com.tankzor.game.common_value.AssetLoader;
-import com.tankzor.game.common_value.GameSounds;
+import com.tankzor.game.game_resources.GameSounds;
 import com.tankzor.game.game_object.OnEntityDestroyedListener;
 import com.tankzor.game.game_object.immovable_item.wall.Wall;
 import com.tankzor.game.game_object.manager.LightingManager;
 import com.tankzor.game.game_object.manager.MapInformationProvider;
-import com.tankzor.game.game_object.movable_item.OnDynamicDamagedEntityMovingListener;
 import com.tankzor.game.game_object.movable_item.war_machine.WarMachine;
 
 /**

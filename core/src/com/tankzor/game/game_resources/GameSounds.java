@@ -1,4 +1,4 @@
-package com.tankzor.game.common_value;
+package com.tankzor.game.game_resources;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
@@ -73,13 +73,10 @@ public class GameSounds {
     public void prepareBackgroundMusic() {
         backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("background_music/track0" + MathUtils.random(1, 9) + ".mid"));
         backgroundMusic.setVolume(BGMVolume);
-        backgroundMusic.setOnCompletionListener(new Music.OnCompletionListener() {
-            @Override
-            public void onCompletion(Music music) {
-                backgroundMusic.dispose();
-                prepareBackgroundMusic();
-                playBGM();
-            }
+        backgroundMusic.setOnCompletionListener(music -> {
+            backgroundMusic.dispose();
+            prepareBackgroundMusic();
+            playBGM();
         });
     }
 

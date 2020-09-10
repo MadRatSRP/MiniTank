@@ -14,7 +14,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.shephertz.app42.gaming.multiplayer.client.WarpClient;
 import com.tankzor.game.common_value.Dimension;
-import com.tankzor.game.common_value.GameImages;
+import com.tankzor.game.game_resources.GameImages;
 
 import java.util.HashMap;
 

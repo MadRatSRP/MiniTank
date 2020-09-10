@@ -12,7 +12,7 @@ public class Dimension {
     public static final float BASE_SCREEN_HEIGHT = 720.0f;
     public static float gameObjectScaleFactor = 2.0f;
     public static float buttonWidth = 500.0f;
-    public static Integer buttonHeight = 80.0f;
+    public static float buttonHeight = 80.0f;
     public static float buttonSpace = 10.0f;
     public static float smallFontScale = 1.0f;
     public static float normalFontScale = 1.1f;

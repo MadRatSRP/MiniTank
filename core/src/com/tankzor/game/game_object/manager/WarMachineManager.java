@@ -1,15 +1,11 @@
 package com.tankzor.game.game_object.manager;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.tankzor.game.common_value.AssetLoader;
-import com.tankzor.game.common_value.GameImages;
 import com.tankzor.game.game_object.DamagedEntity;
 import com.tankzor.game.game_object.PlayerSpawnLocation;
 import com.tankzor.game.game_object.RoundSet;

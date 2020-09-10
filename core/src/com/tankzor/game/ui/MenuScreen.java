@@ -2,18 +2,16 @@ package com.tankzor.game.ui;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.tankzor.game.common_value.Dimension;
-import com.tankzor.game.common_value.GameImages;
+import com.tankzor.game.game_resources.GameStyles;
 import com.tankzor.game.main.Tankzor;
 import com.tankzor.game.ui.workshop.WorkshopScreen;
 
@@ -34,26 +32,16 @@ public class MenuScreen extends BaseScreen {
     private TextButton settingButton;
     private TankBackground tankBackground;
 
-    public MenuScreen(Tankzor parent, Viewport viewport, SpriteBatch gameBatch, InputMultiplexer gameInputMultiplexer) {
+    public MenuScreen(Tankzor parent, Viewport viewport, SpriteBatch gameBatch,
+                      InputMultiplexer gameInputMultiplexer) {
         super(parent, viewport, gameBatch, gameInputMultiplexer);
     }
 
     @Override
     protected void initViews() {
-        final Skin skin = GameImages.getInstance().getUiSkin();
-
         tankBackground = new TankBackground();
 
-        final TextButton.TextButtonStyle buttonStyle = new TextButton.TextButtonStyle();
-        buttonStyle.down = skin.getDrawable(GameImages.KEY_BUTTON_BACKGROUND);
-        buttonStyle.down.setMinWidth(Dimension.buttonWidth);
-        buttonStyle.down.setMinHeight(Dimension.buttonHeight);
-        buttonStyle.font = GameImages.getInstance().getGameFont();
-        buttonStyle.fontColor = Color.WHITE;
-        buttonStyle.disabledFontColor = Color.DARK_GRAY;
-        buttonStyle.overFontColor = Color.LIGHT_GRAY;
-
-        campaignButton = createStylizedTextButton(BUTTON_LABEL_CAMPAIGN, buttonStyle);
+        campaignButton = createStylizedTextButton(BUTTON_LABEL_CAMPAIGN);
         campaignButton.addListener(new InputListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
@@ -66,7 +54,7 @@ public class MenuScreen extends BaseScreen {
             }
         });
 
-        onlineMatchButton = createStylizedTextButton(BUTTON_LABEL_ONLINE_MATCH, buttonStyle);
+        onlineMatchButton = createStylizedTextButton(BUTTON_LABEL_ONLINE_MATCH);
         onlineMatchButton.addListener(new InputListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
@@ -79,7 +67,7 @@ public class MenuScreen extends BaseScreen {
             }
         });
 
-        workshopButton = createStylizedTextButton(BUTTON_LABEL_WORKSHOP, buttonStyle);
+        workshopButton = createStylizedTextButton(BUTTON_LABEL_WORKSHOP);
         workshopButton.addListener(new InputListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
@@ -92,7 +80,7 @@ public class MenuScreen extends BaseScreen {
             }
         });
 
-        settingButton = createStylizedTextButton(BUTTON_LABEL_SETTINGS, buttonStyle);
+        settingButton = createStylizedTextButton(BUTTON_LABEL_SETTINGS);
         settingButton.addListener(new InputListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
@@ -106,9 +94,10 @@ public class MenuScreen extends BaseScreen {
         });
     }
 
-    private TextButton createStylizedTextButton(String buttonName,
-                                                TextButton.TextButtonStyle buttonStyle) {
-        final TextButton button = new TextButton(buttonName, buttonStyle);
+    private TextButton createStylizedTextButton(String buttonName) {
+        final TextButton button = new TextButton(
+                buttonName, GameStyles.getInstance().getMenuScreenTextButtonStyle()
+        );
         button.setSize(Dimension.buttonWidth, Dimension.buttonHeight);
         button.getLabel().setFontScale(Dimension.normalFontScale);
         return button;

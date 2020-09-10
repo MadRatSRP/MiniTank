@@ -19,7 +19,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.tankzor.game.common_value.Dimension;
-import com.tankzor.game.common_value.GameImages;
+import com.tankzor.game.game_resources.GameImages;
 import com.tankzor.game.common_value.MissionRecorder;
 import com.tankzor.game.common_value.PlayerProfile;
 import com.tankzor.game.main.Tankzor;
@@ -47,6 +47,7 @@ public class MissionResultScreen extends BaseScreen {
     protected void initViews() {
         tankBackground = new TankBackground();
 
+        // Label parameters
         Label.LabelStyle labelStyle = GameImages.getInstance().getLabelStyle();
 
         titleLabel = new Label("", labelStyle);
@@ -179,30 +180,16 @@ public class MissionResultScreen extends BaseScreen {
         Table table = new Table();
         table.align(Align.left);
         table.padTop(Dimension.buttonSpace * 2);
-        table.add(moneyLabel).align(Align.left).width(500);
-        table.add(money).align(Align.left);
-        table.row();
-        table.add(addOnLabel).align(Align.left).width(500);
-        table.add(addOn).align(Align.left);
-        table.row();
-        table.add(starLabel).align(Align.left).width(500);
-        table.add(star).align(Align.left);
-        table.row();
-        table.add(playTimeLabel).align(Align.left).width(500);
-        table.add(playTime).align(Align.left);
-        table.row();
-        table.add(unitDestroyedLabel).align(Align.left).width(500);
-        table.add(unitDestroyed).align(Align.left);
-        table.row();
-        table.add(shotCountLabel).align(Align.left).width(500);
-        table.add(shotCount).align(Align.left);
-        table.row();
-        table.add(takenDamageLabel).align(Align.left).width(500);
-        table.add(takenDamage).align(Align.left);
-        table.row();
-        table.add(travelDistanceLabel).align(Align.left).width(500);
-        table.add(travelDistance).align(Align.left);
-        table.row();
+
+        addLabels(table, moneyLabel, money);
+        addLabels(table, addOnLabel, addOn);
+        addLabels(table, starLabel, star);
+        addLabels(table, playTimeLabel, playTime);
+        addLabels(table, unitDestroyedLabel, unitDestroyed);
+        addLabels(table, shotCountLabel, shotCount);
+        addLabels(table, takenDamageLabel, takenDamage);
+        addLabels(table, travelDistanceLabel, travelDistance);
+
         rootGroup.addActor(table);
 
         VerticalGroup buttonGroup = new VerticalGroup();
@@ -217,6 +204,11 @@ public class MissionResultScreen extends BaseScreen {
         scrollPane.setBounds(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight() - 100);
         scrollPane.setTouchable(Touchable.enabled);
         screenStage.addActor(scrollPane);
+    }
+    private void addLabels(Table table, Label firstLabel, Label secondLabel) {
+        table.add(firstLabel).align(Align.left).width(500);
+        table.add(secondLabel).align(Align.left);
+        table.row();
     }
 
     @Override

@@ -1,4 +1,4 @@
-package com.tankzor.game.common_value;
+package com.tankzor.game.game_resources;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
