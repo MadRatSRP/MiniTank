@@ -50,8 +50,11 @@ public abstract class MovableBotWarMachine extends MovableWarMachine implements 
     protected TerrainObservable terrainWaitingFor;
 
     protected QuadRectangle rangeBound;
+    
+    private Boolean isDebugModeEnabled;
 
-    public MovableBotWarMachine(SpawnLocation spawnLocation,
+    public MovableBotWarMachine(Boolean isDebugModeEnabled,
+                                SpawnLocation spawnLocation,
                                 int type,
                                 int teamID,
                                 int hitPoint,
@@ -78,6 +81,7 @@ public abstract class MovableBotWarMachine extends MovableWarMachine implements 
                 airManager,
                 assetLoader,
                 trackListener);
+        this.isDebugModeEnabled = isDebugModeEnabled;
         this.controlAreas = controlAreas;
         setUpMapFindingSystems(pathFindingProvider);
         currentPathsLocation = new ArrayList<FloatPoint>();
@@ -94,20 +98,22 @@ public abstract class MovableBotWarMachine extends MovableWarMachine implements 
 
     @Override
     protected void drawDebugBounds(ShapeRenderer shapes) {
-        super.drawDebugBounds(shapes);
-        shapes.rect(getX() - (attackRangeSize - ITEM_SIZE) / 2,
+        if (isDebugModeEnabled) {
+            super.drawDebugBounds(shapes);
+            shapes.rect(getX() - (attackRangeSize - ITEM_SIZE) / 2,
                 getY() - (attackRangeSize - ITEM_SIZE) / 2,
                 attackRangeSize,
                 attackRangeSize);
-        for (int i = 0; i < currentPathsLocation.size(); i++) {
-            shapes.rect(currentPathsLocation.get(i).x,
+            for (int i = 0; i < currentPathsLocation.size(); i++) {
+                shapes.rect(currentPathsLocation.get(i).x,
                     currentPathsLocation.get(i).y,
                     ITEM_SIZE,
                     ITEM_SIZE);
-        }
-
-        if (currentAttackTarget != null) {
-            shapes.circle(currentAttackTarget.getX() + ITEM_SIZE / 2, currentAttackTarget.getY() + ITEM_SIZE / 2, ITEM_SIZE / 2);
+            }
+    
+            if (currentAttackTarget != null) {
+                shapes.circle(currentAttackTarget.getX() + ITEM_SIZE / 2, currentAttackTarget.getY() + ITEM_SIZE / 2, ITEM_SIZE / 2);
+            }
         }
     }
 

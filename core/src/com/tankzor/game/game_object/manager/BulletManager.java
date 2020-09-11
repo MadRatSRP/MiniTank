@@ -236,7 +236,8 @@ public class BulletManager extends Stage implements OnWarMachineFiringListener {
 
             case SupportItem.ALLY_TANK: {
                 PlayerProfile playerProfile = PlayerProfile.getInstance();
-                BotTank botTank = new BotTank(playerWarMachine.getSpawnLocation(),
+                BotTank botTank = new BotTank(false,
+                    playerWarMachine.getSpawnLocation(),
                                                 playerProfile.getAllyTankType(),
                                                 DamagedEntity.ALLIES_TEAM,
                                                 playerProfile.getAllyTankHitPoint(),
@@ -263,7 +264,7 @@ public class BulletManager extends Stage implements OnWarMachineFiringListener {
 
             case SupportItem.ALLY_KAMIKAZE_TANK: {
                 PlayerProfile playerProfile = PlayerProfile.getInstance();
-                BotKamikazeTank botKamikazeTank = new BotKamikazeTank(playerWarMachine.getSpawnLocation(),
+                BotKamikazeTank botKamikazeTank = new BotKamikazeTank(false, playerWarMachine.getSpawnLocation(),
                                                                         DamagedEntity.ALLIES_TEAM,
                                                                         playerProfile.getAllyKamikazeTankHitPoint(),
                                                                         playerProfile.getAllyKamikazeTankSpeed(),

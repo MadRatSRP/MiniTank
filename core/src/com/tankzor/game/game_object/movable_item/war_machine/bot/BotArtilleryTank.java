@@ -51,7 +51,7 @@ public class BotArtilleryTank extends BotTank implements OnExplosionFinishListen
                             int range,
                             PathFindingProvider pathFindingProvider,
                             OnWarMachineFiringListener firingListener) {
-        super(spawnLocation,
+        super(false, spawnLocation,
                 WarMachine.ARTILLERY_TANK_TYPE,
                 teamID,
                 hitPoint,

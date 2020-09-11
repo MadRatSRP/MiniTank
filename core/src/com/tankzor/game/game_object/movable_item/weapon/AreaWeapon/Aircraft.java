@@ -6,7 +6,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.actions.MoveToAction;
 import com.tankzor.game.common_value.AssetLoader;
-import com.tankzor.game.common_value.GameSounds;
+import com.tankzor.game.game_resources.GameSounds;
 import com.tankzor.game.game_object.DamagedEntity;
 import com.tankzor.game.game_object.GameEntity;
 import com.tankzor.game.game_object.OnEntityDestroyedListener;

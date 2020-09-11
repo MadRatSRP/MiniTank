@@ -19,17 +19,14 @@ buildscript {
     }
 }
 
-allprojects {project ->
+allprojects { project ->
     apply plugin: "eclipse"
     apply plugin: "idea"
 
-    version = '1.0'
     ext {
         appName = "Tankzor"
-        roboVMVersion = '2.2.0'
-        box2DLightsVersion = '1.4'
-        ashleyVersion = '1.7.0'
-        aiVersion = '1.8.0'
+
+        version = '1.0'
 
         gdxVersion = "1.9.11"
     }

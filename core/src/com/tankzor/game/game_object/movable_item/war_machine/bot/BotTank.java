@@ -38,7 +38,8 @@ public class BotTank extends MovableBotWarMachine {
     private float currentReloadTime;
     private NavigationGrid<GridCell> pathFindingMapIgnoreSomeWall;
 
-    public BotTank(SpawnLocation spawnLocation,
+    public BotTank(Boolean isDebugModeEnabled,
+                   SpawnLocation spawnLocation,
                    int type,
                    int teamID,
                    int hitPoint,
@@ -54,7 +55,7 @@ public class BotTank extends MovableBotWarMachine {
                    int rangeSize,
                    PathFindingProvider pathFindingProvider,
                    OnWarMachineFiringListener firingListener) {
-        super(spawnLocation,
+        super(isDebugModeEnabled, spawnLocation,
                 type,
                 teamID,
                 hitPoint,

@@ -15,7 +15,6 @@ dependencies {
     // LibGDX
     implementation "com.badlogicgames.gdx:gdx:$gdxVersion"
     implementation "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
-    implementation "com.badlogicgames.gdx:gdx-controllers:$gdxVersion"
     // pathFinding
     implementation "com.github.xaguzman:pathfinding:$pathFindingVersion"
     // box2DLights

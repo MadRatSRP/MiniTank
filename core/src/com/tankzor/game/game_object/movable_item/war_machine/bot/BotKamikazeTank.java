@@ -20,7 +20,9 @@ import com.tankzor.game.game_object.movable_item.weapon.AreaWeapon.Bomb;
 
 public class BotKamikazeTank extends MovableBotWarMachine {
     public static final float DISTANCE_ACTIVE_BOMB = 1.5f * ITEM_SIZE;
-    public BotKamikazeTank(SpawnLocation spawnLocation,
+    public BotKamikazeTank(
+        Boolean isDebugModeEnabled,
+        SpawnLocation spawnLocation,
                            int teamID,
                            int hitPoint,
                            float speed,
@@ -33,7 +35,9 @@ public class BotKamikazeTank extends MovableBotWarMachine {
                            Array<GridPoint2> controlAreas,
                            int rangeSize,
                            PathFindingProvider pathFindingProvider) {
-        super(spawnLocation,
+        super(
+            isDebugModeEnabled,
+            spawnLocation,
                 WarMachine.KAMIKAZE_TANK_TYPE,
                 teamID,
                 hitPoint,

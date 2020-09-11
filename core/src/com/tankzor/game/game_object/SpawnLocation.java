@@ -162,7 +162,8 @@ public class SpawnLocation implements EmptyTerrainListener {
         switch (warMachineModel.id) {
             case WarMachine.LIGHT_TANK_TYPE:
             case WarMachine.HEAVY_TANK_TYPE: {
-                result = new BotTank(this,
+                result = new BotTank(false,
+                    this,
                         warMachineModel.id,
                         teamId,
                         warMachineModel.hitPoint,
@@ -183,7 +184,8 @@ public class SpawnLocation implements EmptyTerrainListener {
             break;
 
             case WarMachine.KAMIKAZE_TANK_TYPE: {
-                result = new BotKamikazeTank(this,
+                result = new BotKamikazeTank(false,
+                    this,
                         teamId,
                         warMachineModel.hitPoint,
                         warMachineModel.speed,
